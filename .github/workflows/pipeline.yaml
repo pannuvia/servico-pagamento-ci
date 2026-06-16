@@ -49,7 +49,7 @@ jobs:
           path: ./mochawesome-report
           name: Relatório de Testes Unitários
 
-    deploy:
+  deploy:
     runs-on: ubuntu-latest
     needs: [inspecao,unidade]
 
