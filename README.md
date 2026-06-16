@@ -1,142 +1,158 @@
-# Serviço de Pagamento
+# 💳 Serviço de Pagamento (CI/CD com GitHub Actions)
 
-Projeto criado como trabalho de conclusao da disciplina de Integração Continua Para Automação de Testes.
-O projeto implementa uma classe que possui dois métodos: um para realizar pagamento e outro para consultar o último pagamento. 
-Foi feito usando JavaScript rodando no Node.js
+Projeto prático desenvolvido como **Trabalho de Conclusão de Disciplina** para a pós-graduação em Automação de Testes de Software. O objetivo principal é demonstrar a aplicação prática de conceitos de **Integração Contínua (CI)** utilizando o **GitHub Actions** para automatizar a inspeção de código, execução de testes unitários e gerenciamento de artefatos.
 
-
-# Requisitos
-
-- Node.js instalado
-- npm instalado
+A aplicação consiste em uma API de gerenciamento de pagamentos desenvolvida em **JavaScript (Node.js)** que valida regras de negócio baseadas em faixas de valores e fornece relatórios automatizados.
 
 ---
 
+## 🚀 Tecnologias e Ferramentas Utilizadas
 
-# Estrutura do Projeto
+* **Ambiente de Execução:** Node.js (v24+ garantido na pipeline)
+* **Linguagem:** JavaScript (ES6+ / ESModules)
+* **Framework de Testes:** Mocha
+* **Biblioteca de Asserções:** Node.js Assert (Nativo)
+* **Inspeção de Código (Linter):** ESLint
+* **Relatório Visual:** Mochawesome Reporter
+* **Orquestração de CI/CD:** GitHub Actions
 
-```txt
-servico-pagamento/
+---
+
+## 📦 Estrutura do Projeto
+
+```
+servico-pagamento-ci/
+├── .github/
+│   └── workflows/
+│       └── pipeline.yaml     # Configuração da Pipeline CI
 ├── src/
-│   └── ServicoDePagamento.js
+│   └── servicoDePagamento.js # Regras de negócio da aplicação
 ├── test/
-│   └── ServicoDePagamento.test.js
-├── package.json
-└── README.md
+│   └── servicoDePagamento.test.js # Testes unitários automatizados
+├── package.json              # Gerenciador de dependências e scripts
+└── README.md                 # Documentação do projeto
 ```
+---
 
+## 🛠️ Funcionalidades e Regras de Negócio
 
-# Funcionalidades
+A classe ServicoDePagamento expõe métodos para registrar e consultar transações de contas (ex: Cagece, Enel, Claro), aplicando uma categorização automática baseada no valor:
 
-A classe possui dois métodos:
+    - realizarPagamento(codigoBarras, empresa, valor): Registra o pagamento no histórico interno do sistema.
+    - consultarUltimoPagamento(): Retorna o último pagamento efetuado. Caso não haja registros, retorna null.
 
-## realizarPagamento
+Critério de Categorização de Gastos:
 
-Responsável por registrar um pagamento.
-
-## consultarUltimoPagamento
-
-Responsável por consultar o ultimo pagamento realizado.
-Caso não exista pagamento, retorna `null`.
-
-### Regra de categoria
-
-- Valor maior que `100` → categoria `"cara"`
-- Valor menor ou igual a `100` → categoria `"padrão"`
+    - Valores maiores que 100 -> Categoria: "cara"
+    - Valores menores ou iguais a 100 -> Categoria: "padrão"
 
 ---
 
-# Exemplo de uso
+## ⚙️ Instalação e Execução Local
 
-```javascript
-const ServicoDePagamento = require('./src/ServicoDePagamento');
+Pré-requisitos
 
-const servicoDePagamento = new ServicoDePagamento();
+    Node.js instalado localmente.
 
-servicoDePagamento.pagar(
-  '0987-7656-3475',
-  'Samar',
-  156.87
-);
+1. Clonar o repositório e instalar dependências:
 
-console.log(
-  servicoDePagamento.consultarUltimoPagamento()
-);
-```
+```Bash
 
-## Saída
-
-```javascript
-{
-  codigoBarras: '0987-7656-3475',
-  empresa: 'Samar',
-  valor: 156.87,
-  categoria: 'cara'
-}
-```
-
-
-## Instalação
-
-```bash
 npm install
+
+```
+2. Rodar a inspeção de código (Linter):
+
+```Bash
+
+npm run lint
+
 ```
 
-## Rodar testes
+(Para corrigir problemas automáticos de espaçamento/ponto e vírgula, utilize: npm run lint -- --fix)
 
-```bash
-npm test
+3. Rodar os testes unitários e gerar relatório:
+
+```Bash
+
+npm run test
+
 ```
 
-## Gerar relatório
-
-```bash
-npm run test:report
-```
+Após a execução, a pasta mochawesome-report/ será criada contendo o relatório detalhado em formato HTML.
 
 ---
 
-## Tecnologias utilizadas
+## 🔄 Solução de Integração Contínua (CI)
 
-- Node.js
-- Mocha
-- Assert
+A pipeline foi projetada dividindo o fluxo de trabalho em estágios interdependentes (Jobs). Desse modo, o deploy ou a execução de testes só ocorrem se o código estiver estritamente dentro dos padrões de formatação definidos.
 
----
+Cenários de Gatilhos (Triggers) Implementados:
 
-## Execução em pipeline
-
-Pipeline de integração contínua utilizando GitHub Actions para um projeto com testes automatizados, contemplando:
-- Execução manual: Permite que ative a pipeline manualmente pelo site do GitHub
-- Execução por push: Roda automaticamente toda vez que é enviado um commit para a branch main
-- Execução agendada: Roda sozinha todas as terças, quintas e sábados às 06:00 da manhã (UTC)
-- Geração de relatório de testes.
-- Armazenamento/publicação do relatório na pipeline.
-
-## Estrutura dos Jobs
-
-A pipeline é dividida em dois estágios principais (jobs):
-
-1. Verificação de Código
-
-Foca na integridade e padronização do código antes da execução de qualquer lógica.
-
-    Checkout: Baixa o código do repositório para a máquina virtual.
-    Setup Node: Configura o ambiente Node.js na versão mais recente.
-    Instalação: Executa o npm install para baixar as dependências.
-    Inspeção (Lint): Roda o ESLint para verificar erros de sintaxe e padrões de estilo.
-
-2. Testes Unitários
-
-Executado somente se a verificação de código for bem-sucedida.
-
-    Setup e Instalação: Prepara o ambiente para os testes.
-    Execução dos Testes: Roda o comando npm run test:report, que utiliza o Mocha para validar as regras de negócio e gera um relatório visual.
-    Upload de Artefato: Salva o relatório gerado pelo Mochawesome como um artefato da pipeline, permitindo que o resultado dos testes seja baixado e visualizado em formato HTML.
-
+    - Gatilho por Push: Executa de forma 100% automatizada a cada commit enviado para a branch main.
+    - Gatilho Manual (workflow_dispatch): Permite que qualquer analista ou testador acione a pipeline sob demanda através do painel do GitHub Actions.
+    - Gatilho Agendado (schedule / cron): Configurado para rodar de forma recorrente em horários de menor pico: Terças, Quintas e Sábados às 09:00 UTC (06:00 da manhã no horário de Brasília).
 
 ---
 
-# Autor
+## 🏗️ Arquitetura da Pipeline (Jobs)
 
-Desenvolvido para desafio técnico por Pannuvia Soares Monteiro
+A pipeline executa sequencialmente três grandes etapas em máquinas virtuais limpas baseadas em ubuntu-latest:
+
+1. Inspeção de Código (inspecao)
+
+Foca em validar a qualidade estrutural e legibilidade do código antes de processar lógicas complexas.
+
+    Faz o download do repositório (actions/checkout).
+
+    Prepara o ambiente isolado com Node.js (actions/setup-node).
+
+    Instala as dependências de desenvolvimento (npm install).
+
+    Roda o eslint para garantir que o código submetido não possua variáveis mortas ou quebras de padrão.
+
+2. Testes Unitários (unidade)
+
+Depende do sucesso do job de Inspeção (needs: [inspecao]).
+
+    Configura o ambiente e roda a suite de testes automatizados com o Mocha.
+
+    Geração e Armazenamento do Artefato: Utiliza a action actions/upload-artifact. Mesmo que um teste falhe (if: ${{ always() }}), a pipeline garante a coleta do relatório gerado pelo mochawesome-report em HTML, disponibilizando-o diretamente na interface do GitHub para auditoria.
+
+3. Deploy Simulador (deploy)
+
+Depende do sucesso do job de Unidade (needs: [unidade]).
+
+    Simula a última etapa de uma esteira de entrega contínua (CD), garantindo que o código só estaria apto para produção após passar por todas as travas de segurança anteriores.
+
+---
+
+## 🧑‍💻 Exemplo de Uso Prático da Classe
+
+```javascript
+
+import { ServicoDePagamento } from './src/servicoDePagamento.js';
+
+const servico = new ServicoDePagamento();
+
+// Realizando um pagamento acima de 100
+servico.realizarPagamento('0987-7656-3475', 'Cagece', 156.87);
+
+// Consultando a saída processada
+console.log(servico.consultarUltimoPagamento());
+
+Saída no terminal:
+{
+  "codigoBarras": "0987-7656-3475",
+  "empresa": "Cagece",
+  "valor": 156.87,
+  "categoria": "cara"
+}
+
+---
+
+## 👩‍💻 Autora
+
+    Pannuvia Soares Monteiro
+
+    Trabalho prático de avaliação da disciplina de Integração Contínua para Automação de Testes.
