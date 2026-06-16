@@ -1,4 +1,4 @@
-name: 'Execução da Pipeline Principal'
+name: 'Execução da Pipeline de CI'
 
 on:
   workflow_dispatch:
@@ -6,10 +6,10 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 6 * * 1,3,5'
+    - cron: '0 6 * * 2,4,6'
 
 jobs:
-  verificacao-codigo:
+  inspecao:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,9 +25,9 @@ jobs:
       - name: Inspeção de Código
         run: npm run lint
 
-  testes-unitarios:
+  unidade:
     runs-on: ubuntu-latest
-    needs: [verificacao-codigo]
+    needs: [inspecao]
 
     steps:
       - uses: actions/checkout@v4
@@ -39,8 +39,8 @@ jobs:
       - name: Instalando dependências
         run: npm install
 
-      - name: Executando testes unitários
-        run: npm run test:report
+      - name: Rodando testes unitários
+        run: npm run test
 
       - name: Salvando relatórios de testes
         uses: actions/upload-artifact@v4
@@ -48,3 +48,11 @@ jobs:
         with:
           path: ./mochawesome-report
           name: Relatório de Testes Unitários
+
+    deploy:
+    runs-on: ubuntu-latest
+    needs: [unidade, e2e-tests]
+
+    steps:
+      - name: Simulação de Deploy
+        run: echo 'Deploy sendo realizado...'
