@@ -11,6 +11,8 @@ on:
 # Ativa o Node.js 24 por padrão para sumir com os avisos de depreciação
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  ACTIONS_FLAGS_SUPPRESS_DEPRECATIONS: true
+
 
 jobs:
   inspecao:
