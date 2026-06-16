@@ -104,11 +104,8 @@ A pipeline executa sequencialmente três grandes etapas em máquinas virtuais li
 Foca em validar a qualidade estrutural e legibilidade do código antes de processar lógicas complexas.
 
     Faz o download do repositório (actions/checkout).
-
     Prepara o ambiente isolado com Node.js (actions/setup-node).
-
     Instala as dependências de desenvolvimento (npm install).
-
     Roda o eslint para garantir que o código submetido não possua variáveis mortas ou quebras de padrão.
 
 2. Testes Unitários (unidade)
@@ -116,7 +113,6 @@ Foca em validar a qualidade estrutural e legibilidade do código antes de proces
 Depende do sucesso do job de Inspeção (needs: [inspecao]).
 
     Configura o ambiente e roda a suite de testes automatizados com o Mocha.
-
     Geração e Armazenamento do Artefato: Utiliza a action actions/upload-artifact. Mesmo que um teste falhe (if: ${{ always() }}), a pipeline garante a coleta do relatório gerado pelo mochawesome-report em HTML, disponibilizando-o diretamente na interface do GitHub para auditoria.
 
 3. Deploy Simulador (deploy)
@@ -141,6 +137,10 @@ servico.realizarPagamento('0987-7656-3475', 'Cagece', 156.87);
 // Consultando a saída processada
 console.log(servico.consultarUltimoPagamento());
 
+```
+
+```Bash
+
 Saída no terminal:
 {
   "codigoBarras": "0987-7656-3475",
@@ -149,6 +149,7 @@ Saída no terminal:
   "categoria": "cara"
 }
 
+```
 ---
 
 ## 👩‍💻 Autora
