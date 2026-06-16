@@ -5,8 +5,8 @@ export class ServicoDePagamento {
     this.#pagamentos = [];
   }
 
-  realizarPagamento(codigoBarras, empresa, valor, categoria) {
-    this.#pagamentos.push ({
+  realizarPagamento(codigoBarras, empresa, valor) {
+    this.#pagamentos.push({
       codigoBarras: codigoBarras,
       empresa: empresa,
       valor: valor,
