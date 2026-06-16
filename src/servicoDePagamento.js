@@ -11,7 +11,7 @@ export class ServicoDePagamento {
       empresa: empresa,
       valor: valor,
       categoria: valor > 100 ? 'cara' : 'padrão'
-   });
+    });
   }
 
   consultarUltimoPagamento() {
@@ -19,6 +19,6 @@ export class ServicoDePagamento {
       return null;
     }
 
-    return this.#pagamentos.at(-1)
+    return this.#pagamentos.at(-1);
   }
 }

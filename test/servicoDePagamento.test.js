@@ -28,7 +28,7 @@ describe('Testes da Classe de Servico de Pagamento', () => {
     assert.equal(ultimoPagamento.categoria, 'padrão');
   });
 
-    it('Deve realizar um pagamento com valor menor que 100', () => {
+  it('Deve realizar um pagamento com valor menor que 100', () => {
     const servicoDePagamento = new ServicoDePagamento();
 
     servicoDePagamento.realizarPagamento('4321-8765-0000', 'Claro', 99.99);
